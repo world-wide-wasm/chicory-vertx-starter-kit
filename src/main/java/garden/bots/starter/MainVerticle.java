@@ -1,7 +1,10 @@
 package garden.bots.starter;
 
+import com.dylibso.chicory.log.SystemLogger;
 import com.dylibso.chicory.runtime.*;
 import com.dylibso.chicory.runtime.Module;
+import com.dylibso.chicory.wasi.WasiOptions;
+import com.dylibso.chicory.wasi.WasiPreview1;
 import com.dylibso.chicory.wasm.types.ValueType;
 import com.dylibso.chicory.wasm.types.Value;
 
@@ -99,6 +102,7 @@ public class MainVerticle extends AbstractVerticle {
     // Create fd_write method to avoid this warning message:
     // "WARNING: Could not find host function for import number: 0 named wasi_snapshot_preview1.fd_write"
 
+    /*
     var fd_write = new HostFunction(
       (Instance instance, Value... params) -> {
         return null;
@@ -110,9 +114,22 @@ public class MainVerticle extends AbstractVerticle {
 
     var imports = new HostImports(new HostFunction[] {fd_write});
 
-    // Load the wasm module
-    //Module module = Module.builder(new File(wasmFileLocalLocation)).build();
-    Module module = Module.builder(new File(wasmFileLocalLocation)).build().withHostImports(imports);
+     */
+
+
+    //https://github.com/dylibso/chicory/tree/main/wasi#how-to-use
+    var logger = new SystemLogger();
+    // let's just use the default options for now
+    var options = WasiOptions.builder().build();
+    // create our instance of wasip1
+    var wasi = new WasiPreview1(logger, WasiOptions.builder().build());
+    // turn those into host imports. Here we could add any other custom imports we have
+    var imports = new HostImports(wasi.toHostFunctions());
+
+    // create the module
+    var module = Module.builder(new File(wasmFileLocalLocation)).build().withHostImports(imports);
+    // instantiate and connect our imports, this will execute the module
+    //var instance = module.instantiate();
 
     // Define the route handler
     var handler = this.defineHandler(module, wasmFunctionName);
