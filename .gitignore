@@ -1,0 +1,20 @@
+.vertx/
+.idea
+libextism-aarch64-apple-darwin-v0.2.0
+target
+tmp/*.wasm
+
+*.DS_Store
+
+
+.mvn/*
+# Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
+!/.mvn/wrapper/maven-wrapper.jar
+
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
